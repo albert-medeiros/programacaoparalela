@@ -8,34 +8,9 @@
 #include <omp.h>
 #define max 15
 
-typedef struct TipoPalavra{
-    char palavra_salva[max];
-}pal;
-
-
-
-// int verifica_quantidade_palavras(){
-
-
-//     printf("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOi");
-//     FILE *arquivo;
-//     arquivo = fopen("/home/tebla/Documentos/OpenMp-Albert/arquivo.txt", "r");
-//     char palavra;
-//     int qnt;
-    
-//     while(feof(arquivo) == 0){   
-//         fscanf(arquivo,"%s",palavra);
-//         qnt++;
-//     }
-    
-//     fclose(arquivo);
-//     return qnt; 
-// }
-
-
 void ler(int *fimLeitura){
 
-    printf("entrou aqui na função de leitura!\n\n");
+    // /printf("entrou aqui na função de leitura!\n\n");
     // char *letra[1];
     char carac, palavra[150],todas_letras[2000];
     int tam=0,qnt=0,j=0;
@@ -47,26 +22,10 @@ void ler(int *fimLeitura){
 
     if(arquivo == NULL){
         printf("Erro, nao foi possivel abrir o arquivo\n");
+        return 0;
     }         
     else{
-        printf("\nArquivo aberto com sucesso!\n");
-               
-       // while(feof(arquivo) == 0){   
-        //    fscanf(arquivo,"%s",palavra);
-        //     //printf("\nA palavra lida foi a: %s ", palavra);
-        //     // for (int i = 0; i < strlen(palavra); i++){
-        //     //     palavra[i] = tolower(palavra[i]);                
-        //     //     // if(strcmp(palavra,"á")==0){
-        //     //     //     printf("\t\t\tAchou um caracter especial");
-        //     //     // } 
-        //     // }
-        //     //printf("\nA palavra lida com os carateres minusculo foram: %s ", palavra);
-        //     //fprintf(saida,"%s\n",palavra);
-        //     //palvs[j]->palavra_salva = palavra;
-        //     // carac=tolower(palavra);               
-        //     //  printf("\n\t%s",carac);
-        //}
-        
+         
         do{
             carac=fgetc(arquivo);
             todas_letras[qnt] = tolower(carac);
@@ -117,7 +76,7 @@ void ler(int *fimLeitura){
                 qnt--;
            //     printf("\n\n\nLETRA - %c",  todas_letras[qnt-1]);
             }
-            // LETRAS ç com os acentos possiveis de e ter
+            // LETRAS ç 
             if((todas_letras[qnt] == -121 ) || (todas_letras[qnt] == -89)){
         
                 todas_letras[qnt-1] = 99;
@@ -125,6 +84,8 @@ void ler(int *fimLeitura){
                 qnt--;
            //     printf("\n\n\nLETRA - %c",  todas_letras[qnt-1]);
             }
+
+            // Outros caracteres
             if((todas_letras[qnt] == 46)  || (todas_letras[qnt] == 45) || (todas_letras[qnt] == 44) || (todas_letras[qnt] == 47) || (todas_letras[qnt] == 41) || (todas_letras[qnt] == 40)  || (todas_letras[qnt] == 123) || (todas_letras[qnt] == 125) || (todas_letras[qnt] == 91) || (todas_letras[qnt] == 93) || (todas_letras[qnt] == 34) || (todas_letras[qnt] == 39) || (todas_letras[qnt] == 61) || (todas_letras[qnt] == 58) || (todas_letras[qnt] == 59) || (todas_letras[qnt] == 33)){
                     todas_letras[qnt] = 32;
             //    printf("\n\n\nLETRA - %c",  todas_letras[qnt-1]);
@@ -137,19 +98,6 @@ void ler(int *fimLeitura){
             }
                     
             qnt++;
-
-            // if(isspace(carac)){
-            //     //printf("\nPalavra: %s",palavra);
-            //     palavra[j++] = '\0';
-            //     j=0;
-            //     fflush(arquivo);
-            // }
-            // else{
-            //     palavra[j]=carac;
-            // }
-            // j=j+1;
-            //fgets(palavra, 10, arquivo);
-
         }while(carac != EOF);
         qnt--;
         //printf ("\n\nO Arquivo possui %d letras",strlen(todas_letras));
@@ -162,7 +110,7 @@ void ler(int *fimLeitura){
     //     printf("%c", todas_letras[p]);
     // }
 
-    printf("Tam qnt %d todas_letras %d", qnt,strlen(todas_letras));
+    //printf("Tam qnt %d todas_letras %d", qnt,strlen(todas_letras));
     
     saida = fopen("lista1.txt", "w");
     for(int q=0;q<strlen(todas_letras);q++){
@@ -176,7 +124,7 @@ void ler(int *fimLeitura){
     }
 
     *fimLeitura=1;
-    printf("\n----->   FimLeitura: %d\n\n", *fimLeitura);
+    //printf("\n----->   FimLeitura: %d\n\n", *fimLeitura);
     
     fflush(arquivo);
     fclose(saida);
@@ -190,20 +138,17 @@ int contador(char palavra[]){
     arquivo_final = fopen("lista1.txt", "r");
     int qnt_total=0;
     char pal[30];
-    //#pragma omp critical
-    //{
+    #pragma omp critical
+    {
         fscanf(arquivo_final,"%s",pal);
         while (feof(arquivo_final) == 0){            
             
             if(strcmp(palavra,pal)==0){
-                printf("\nPal: %s",pal);
-                qnt_total++;
-                printf("\n\n\t\t%s - achou 1 com a thread %d\n",pal,omp_get_thread_num());
-                
+                qnt_total++;                        
             }
             fscanf(arquivo_final,"%s",pal);
         }                
-    //}
+    }
     fclose(arquivo_final);
     return qnt_total;
 }
@@ -220,7 +165,7 @@ int main(){
     printf("Digite a palavra que deseja buscar no arquivo: ");
     scanf("%s", &palavra);
     printf("\n ----- \n");
-    printf("A palavra que você deseja procurar é a: %s\n\n\n", palavra);
+    printf("A palavra que você deseja procurar é a: %s\n", palavra);
     
     #pragma omp parallel
     {
@@ -232,14 +177,11 @@ int main(){
                 ler(&fimLeitura);
             }
         }
-        // else{
-            printf("\nthread %i de %i threads\n", numeroDaThread, totalDeThreads);
+        // else
             quantidade=contador(palavra);
-        // }
-
-        
+        // }        
 	}
-    printf("\n\nA palavra %s apareceu %d vezes no texto",palavra, quantidade);
+    printf("\n\t\t\tA palavra ' %s ' apareceu %d vezes no texto",palavra, quantidade);
     printf("\n\n\n- FIM -\n\n");
     return 0;
 }
