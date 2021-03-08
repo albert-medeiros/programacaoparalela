@@ -179,10 +179,34 @@ void ler(int *fimLeitura){
     printf("\n----->   FimLeitura: %d\n\n", *fimLeitura);
     
     fflush(arquivo);
-    // fclose(saida);
+    fclose(saida);
     fclose(arquivo);
     
 }
+
+
+int contador(char palavra[]){
+    FILE *arquivo_final;
+    arquivo_final = fopen("lista1.txt", "r");
+    int qnt_total=0;
+    char pal[30];
+    #pragma omp critical
+    {
+        fscanf(arquivo_final,"%s",pal);
+        while (pal != EOF){            
+            
+            if(strcmp(palavra,pal)==0){
+            qnt_total++;
+            printf("%s - achou 1",arquivo_final);
+            fscanf(arquivo_final,"%s",pal);
+        }
+        }
+        
+        
+    }
+    fclose(arquivo_final);
+}
+
 
 int main(){
     
@@ -207,9 +231,14 @@ int main(){
                 ler(&fimLeitura);
             }
         }
+        // else{
+            printf("\nthread %i de %i threads\n", numeroDaThread, totalDeThreads);
+            quantidade=contador(palavra);
+        // }
 
-        printf("\nthread %i de %i threads\n", numeroDaThread, totalDeThreads);
+        
 	}
+    printf("A palavra %s apareceu %d vezes no texto",palavra, quantidade);
     printf("\n\n\n- FIM -\n\n");
     return 0;
 }
