@@ -190,20 +190,22 @@ int contador(char palavra[]){
     arquivo_final = fopen("lista1.txt", "r");
     int qnt_total=0;
     char pal[30];
-    #pragma omp critical
-    {
+    //#pragma omp critical
+    //{
         fscanf(arquivo_final,"%s",pal);
-        while (pal != EOF){            
-            printf("\nPal: %s",pal);
+        while (feof(arquivo_final) == 0){            
+            
             if(strcmp(palavra,pal)==0){
+                printf("\nPal: %s",pal);
                 qnt_total++;
-                printf("\n\n\t\t%s - achou 1\n",pal);
+                printf("\n\n\t\t%s - achou 1 com a thread %d\n",pal,omp_get_thread_num());
                 
             }
             fscanf(arquivo_final,"%s",pal);
         }                
-    }
+    //}
     fclose(arquivo_final);
+    return qnt_total;
 }
 
 
@@ -237,7 +239,7 @@ int main(){
 
         
 	}
-    printf("A palavra %s apareceu %d vezes no texto",palavra, quantidade);
+    printf("\n\nA palavra %s apareceu %d vezes no texto",palavra, quantidade);
     printf("\n\n\n- FIM -\n\n");
     return 0;
 }
