@@ -165,7 +165,7 @@ void ler(int *fimLeitura){
     printf("Tam qnt %d todas_letras %d", qnt,strlen(todas_letras));
     
     saida = fopen("lista1.txt", "w");
-    for(int q=0;q<qnt;q++){
+    for(int q=0;q<strlen(todas_letras);q++){
         if(isspace(todas_letras[q])){
             //printf("ENTOU NO IF -----------------------------------------------------------");
             fprintf(saida,"\n");
@@ -194,15 +194,14 @@ int contador(char palavra[]){
     {
         fscanf(arquivo_final,"%s",pal);
         while (pal != EOF){            
-            
+            printf("\nPal: %s",pal);
             if(strcmp(palavra,pal)==0){
-            qnt_total++;
-            printf("%s - achou 1",arquivo_final);
+                qnt_total++;
+                printf("\n\n\t\t%s - achou 1\n",pal);
+                
+            }
             fscanf(arquivo_final,"%s",pal);
-        }
-        }
-        
-        
+        }                
     }
     fclose(arquivo_final);
 }
